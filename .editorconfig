@@ -1,0 +1,11 @@
+root = true
+
+[*]
+end_of-line = lf
+charset = utf-8
+
+[Makefile]
+indent_style = tab
+
+[*.php]
+indent_style = tab

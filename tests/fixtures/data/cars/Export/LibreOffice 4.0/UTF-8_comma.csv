@@ -1,0 +1,14 @@
+VID,Make,Model,Currency,Price,Is Sold?
+1,Fiat,500 C,€,4'999.99,WAHR
+2,Ford,Mustang,$,2'599.99,0
+3,Renault,Mégane,€,1'950.00,no
+4,Fiat,Doblò,€,998.00,yes
+5,Austin,Mini,£,3'599.00,1
+6,Volkswagen,Kübelwagen,CHF,1'337.00,FALSCH
+7,Tesla,Model S,₿,1.50,false
+8,Citroën,Deux Chevaux,₣,12'000.00,no
+9,ВАЗ,Жигули,₽,15'000.00,WAHR
+10,Mahindra,REVA,₹,85'000.00,0
+11,Volkswagen,Käfer,€,1'490.00,0
+12,Škoda,Octavia,Kč,96'000.00,no
+13,Άλτα,A 200,€,3'000.00,yes

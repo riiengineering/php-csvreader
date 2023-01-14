@@ -1,0 +1,14 @@
+VID,Make,Model,Currency,Price,Is Sold?
+1,Fiat,500 C,?,"4,999.99",TRUE
+2,Ford,Mustang,$,"2,599.99",0
+3,Renault,MÇgane,?,"1,950.00",no
+4,Fiat,Doblï,?,998.00,yes
+5,Austin,Mini,ú,"3,599.00",1
+6,Volkswagen,KÅbelwagen,CHF,"1,337.00",FALSE
+7,Tesla,Model S,BTC,1.50,false
+8,Citroân,Deux Chevaux,?,"12,000.00",no
+9,???,??????,RUB,"15,000.00",TRUE
+10,Mahindra,REVA,Rp.,"85,000.00",FALSE
+11,Volkswagen,KÑfer,?,"1,490.00",FALSE
+12,Skoda,Octavia,Kc,"96,000.00",no
+13,??Á‡,A 200,?,"3,000.00",yes

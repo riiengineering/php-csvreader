@@ -1,0 +1,27 @@
+{
+	"name": "riiengineering/csvreader",
+	"description": "Opinionated CSV reader library tuned to the specifics of spreadsheet applications",
+	"type": "library",
+	"readme": "README.md",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Dennis Camera",
+			"email": "dennis.camera@riiengineering.ch",
+			"homepage": "http://www.riiengineering.ch",
+			"role": "developer"
+		}
+	],
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "*",
+		"phpstan/phpstan": "*"
+	},
+	"autoload": {
+		"classmap": [
+			"src/CSVReader.php"
+		]
+	}
+}
