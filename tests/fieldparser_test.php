@@ -36,6 +36,26 @@ final class fieldparser_test extends TestCase {
 	}
 
 	public function testNumberParser(): void {
+		$fn = '\riiengineering\csvreader\fieldparser\parse_number';
+
+		$this->assertNull($fn(''));
+		$this->assertNull($fn('notanumber'));
+
+		$this->assertNull($fn('x'));
+		$this->assertNull($fn('f'));
+		$this->assertNull($fn('-f'));
+	}
+
+	public function testNumberParserHex(): void {
+		$fn = '\riiengineering\csvreader\fieldparser\parse_number';
+
+		$this->assertSame(0, $fn('0x'));
+		$this->assertSame(0, $fn('0x0'));
+		$this->assertSame(1, $fn('0x1'));
+		$this->assertSame(32, $fn('0x20'));
+	}
+
+	public function testNumberParserExcelFormat(): void {
 		$inputs = array(
 			// ints
 			'123',

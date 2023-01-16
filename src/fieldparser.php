@@ -30,6 +30,12 @@ function parse_number(string $value) {
 		$ksep = @$matches[1]; $dsep = @$matches[2];
 
 		$value = str_replace([$ksep, $dsep], ['', '.'], $value);
+
+		// NOTE: the regex above accepts both the part before and after the
+		//       decimal separator to be empty, so we check for it here and
+		//       handle it as an invalid case.
+		if ('.' === $value || '-.' === $value) return NULL;
+
 		return $dsep ? floatval($value) : intval($value, 10);
 	}
 	return NULL;
