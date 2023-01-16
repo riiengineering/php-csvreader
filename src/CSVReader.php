@@ -221,10 +221,6 @@ class CSVReader implements \Iterator {
 		return $res;
 	}
 
-	public function options(): array {
-		return $this->options;
-	}
-
 	private function getRow(): ?array {
 		$row = fgetcsv(
 			$this->fh,
@@ -235,27 +231,25 @@ class CSVReader implements \Iterator {
 		return (FALSE !== $row) ? $row : NULL;
 	}
 
-	// Iterator methods
-	public function current(): ?array {
+
+	// public methods
+
+	public function options(): array {
+		return $this->options;
+	}
+
+	public function currentRow(): ?array {
 		return $this->it_curr;
 	}
-	public function key(): int {
+	public function currentRowNumber(): int {
 		return $this->it_row;
 	}
-	public function next(): void {
-		$this->nextRow();
-	}
-	public function rewind(): void {
-		$this->it_row = 0;
-		$this->it_curr = NULL;
 
-		fseek($this->fh, $this->data_start, SEEK_SET);
-
-		// fetch first row
-		$this->next();
-	}
-	public function valid(): bool {
-		return !is_null($this->it_curr);
+	public function columnNameToNumber(string $colname): int {
+		if (!array_key_exists($colname, $this->colmap)) {
+			throw new \InvalidArgumentException("unknown column: ${colname}");
+		}
+		return $this->colmap[$colname];
 	}
 
 	public function nextRow(): ?array {
@@ -300,5 +294,29 @@ class CSVReader implements \Iterator {
 		$this->it_row++;
 		$this->it_curr = $res;
 		return $this->it_curr;
+	}
+
+
+	// Iterator methods
+	public function current(): ?array {
+		return $this->it_curr;
+	}
+	public function key(): int {
+		return $this->it_row;
+	}
+	public function next(): void {
+		$this->nextRow();
+	}
+	public function rewind(): void {
+		$this->it_row = 0;
+		$this->it_curr = NULL;
+
+		fseek($this->fh, $this->data_start, SEEK_SET);
+
+		// fetch first row
+		$this->next();
+	}
+	public function valid(): bool {
+		return !is_null($this->it_curr);
 	}
 }
