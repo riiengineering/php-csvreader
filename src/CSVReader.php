@@ -178,6 +178,10 @@ class CSVReader implements \Iterator {
 		}
 	}
 
+	public function __destruct() {
+		fclose($this->fh);
+	}
+
 	private function reencode(string $input_encoding): void {
 		$output_encoding = 'UTF-8';
 
