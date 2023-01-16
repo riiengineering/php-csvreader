@@ -16,6 +16,10 @@ function parse_boolean(string $value): ?bool {
 }
 
 function parse_number(string $value) {
+	if ('' === $value) {
+		return NULL;
+	}
+
 	// hex numbers
 	if ('0x' === substr($value, 0, 2)) {
 		return intval($value, 16);

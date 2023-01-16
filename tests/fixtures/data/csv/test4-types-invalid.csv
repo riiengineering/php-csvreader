@@ -2,3 +2,4 @@ num,value_int,int_valid?,value_float,float_valid?,value_boolean,boolean_valid?
 1,1337,TRUE,3.1416,TRUE,TRUE,TRUE
 2,0x20,TRUE,3,TRUE,FALSE,TRUE
 3,notanumber,FALSE,NaN,FALSE,dunno,FALSE
+4,,FALSE,,FALSE,,FALSE

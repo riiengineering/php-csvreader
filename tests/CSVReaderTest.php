@@ -245,6 +245,15 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 				'value_boolean' => NULL,
 				'boolean_valid?' => FALSE,
 			),
+			array(
+				'num' => 4,
+				'value_int' => NULL,
+				'int_valid?' => FALSE,
+				'value_float' => NULL,
+				'float_valid?' => FALSE,
+				'value_boolean' => NULL,
+				'boolean_valid?' => FALSE,
+			),
 		);
 
 		foreach ($reader as $i => $row) {
