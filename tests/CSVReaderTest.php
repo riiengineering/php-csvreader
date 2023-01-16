@@ -194,6 +194,64 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 		}
 
 		unset($reader);
+
+
+		// Test 3
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test4-types-invalid.csv')),
+			array(
+				'num' => array('type' => 'int'),
+				'value_int' => array('type' => 'int'),
+				'int_valid?' => array('type' => 'boolean'),
+				'value_float' => array('type' => 'float'),
+				'float_valid?' => array('type' => 'boolean'),
+				'value_boolean' => array('type' => 'bool'),
+				'boolean_valid?' => array('type' => 'boolean'),
+			),
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => TRUE,
+			));
+
+		$expected = array(
+			array(
+				'num' => 1,
+				'value_int' => 1337,
+				'int_valid?' => TRUE,
+				'value_float' => 3.1416,
+				'float_valid?' => TRUE,
+				'value_boolean' => TRUE,
+				'boolean_valid?' => TRUE,
+			),
+			array(
+				'num' => 2,
+				'value_int' => 32,
+				'int_valid?' => TRUE,
+				'value_float' => 3.0,
+				'float_valid?' => TRUE,
+				'value_boolean' => FALSE,
+				'boolean_valid?' => TRUE,
+			),
+			array(
+				'num' => 3,
+				'value_int' => NULL,
+				'int_valid?' => FALSE,
+				'value_float' => NULL,
+				'float_valid?' => FALSE,
+				'value_boolean' => NULL,
+				'boolean_valid?' => FALSE,
+			),
+		);
+
+		foreach ($reader as $i => $row) {
+			$this->assertSame($expected[$i-1], $row);
+		}
+
+		unset($reader);
 	}
 
 	public function formatDetectionData(): array {

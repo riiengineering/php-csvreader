@@ -274,11 +274,15 @@ class CSVReader implements \Iterator {
 				case 'float':
 				case 'double':
 				case 'number':
-					$value = (float)fieldparser\parse_number($value);
+					$value = fieldparser\parse_number($value);
+					if (!is_null($value))
+						$value = (float)$value;
 					break;
 				case 'int':
 				case 'integer':
-					$value = (int)round(fieldparser\parse_number($value), 0);
+					$value = fieldparser\parse_number($value);
+					if (!is_null($value))
+						$value = (int)round($value, 0);
 					break;
 				case 'string':
 					break;
