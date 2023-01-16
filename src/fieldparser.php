@@ -16,6 +16,12 @@ function parse_boolean(string $value): ?bool {
 }
 
 function parse_number(string $value) {
+	// hex numbers
+	if ('0x' === substr($value, 0, 2)) {
+		return intval($value, 16);
+	}
+
+	// excel number format
 	if (1 === preg_match('/^-?(?:[0-9]{1,3}(?:([^0-9])?[0-9]{3}(?:(?(1)\1)[0-9]{3})*)?)?(?:(?(1)(?!\1))([^0-9])[0-9]*)?$/u', $value, $matches, PREG_UNMATCHED_AS_NULL)) {
 		$ksep = @$matches[1]; $dsep = @$matches[2];
 
