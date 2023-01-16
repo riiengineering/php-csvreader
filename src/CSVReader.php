@@ -263,7 +263,34 @@ class CSVReader implements \Iterator {
 
 		$res = array();
 		foreach ($this->colmap as $k => $i) {
-			$res[$k] = $row[$i];
+			$value = $row[$i];
+
+			$coltype = array_key_exists('type', $this->columns[$k])
+				? $this->columns[$k]['type']
+				 : 'string';
+			switch ($coltype) {
+				case 'bool':
+				case 'boolean':
+					$value = fieldparser\parse_boolean($value);
+					break;
+				case 'float':
+				case 'double':
+				case 'number':
+					$value = (float)fieldparser\parse_number($value);
+					break;
+				case 'int':
+				case 'integer':
+					$value = (int)round(fieldparser\parse_number($value), 0);
+					break;
+				case 'string':
+					break;
+									default:
+						throw new \InvalidArgumentException(
+							"{$this->columns[$k]['type']} is not a valid column type");
+						break;
+			}
+
+			$res[$k] = $value;
 		}
 
 		$this->it_row++;

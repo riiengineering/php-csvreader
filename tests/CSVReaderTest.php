@@ -22,15 +22,15 @@ final class CSVReaderTest extends TestCase {
 			));
 
 		$this->assertSame(
-			array('id' => '1', 'date' => '2017-05-23', 'total' => '13257.54'), $reader->nextRow());
+			array('id' => '1', 'date' => '2017-05-23', 'total' => '13\'257.54'), $reader->nextRow());
 		$this->assertSame(
-			array('id' => '2', 'date' => '2018-07-14', 'total' =>  '5447.75'), $reader->nextRow());
+			array('id' => '2', 'date' => '2018-07-14', 'total' =>   '5,447.75'), $reader->nextRow());
 		$this->assertSame(
-			array('id' => '3', 'date' => '2019-11-23', 'total' =>  '4168.48'), $reader->nextRow());
+			array('id' => '3', 'date' => '2019-11-23', 'total' =>   '4.168,48'), $reader->nextRow());
 		$this->assertSame(
-			array('id' => '4', 'date' => '2020-02-01', 'total' => '41647.41'), $reader->nextRow());
+			array('id' => '4', 'date' => '2020-02-01', 'total' =>  '41 647.41'), $reader->nextRow());
 		$this->assertSame(
-			array('id' => '5', 'date' => '2022-12-20', 'total' =>  '2345.34'), $reader->nextRow());
+			array('id' => '5', 'date' => '2022-12-20', 'total' =>   '2 345,34'), $reader->nextRow());
 		// EOF?
 		$this->assertNull($reader->nextRow());
 	}
@@ -48,11 +48,11 @@ final class CSVReaderTest extends TestCase {
 			));
 
 		$expected = array(
-			array('id' => '1', 'date' => '2017-05-23', 'total' => '13257.54'),
-			array('id' => '2', 'date' => '2018-07-14', 'total' =>  '5447.75'),
-			array('id' => '3', 'date' => '2019-11-23', 'total' =>  '4168.48'),
-			array('id' => '4', 'date' => '2020-02-01', 'total' => '41647.41'),
-			array('id' => '5', 'date' => '2022-12-20', 'total' =>  '2345.34'),
+			array('id' => '1', 'date' => '2017-05-23', 'total' => '13\'257.54'),
+			array('id' => '2', 'date' => '2018-07-14', 'total' =>   '5,447.75'),
+			array('id' => '3', 'date' => '2019-11-23', 'total' =>   '4.168,48'),
+			array('id' => '4', 'date' => '2020-02-01', 'total' =>  '41 647.41'),
+			array('id' => '5', 'date' => '2022-12-20', 'total' =>   '2 345,34'),
 		);
 
 		foreach ($reader as $i => $row) {
@@ -108,6 +108,92 @@ final class CSVReaderTest extends TestCase {
 
 		// check that the reader reads 100 rows (the length of the file)
 		$this->assertCount(100, $reader);
+	}
+
+	public function testTypeConversions(): void {
+		// Test 1
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test1-simple-header.csv')),
+			array(
+				'date' => array(),
+				'id' => array('type' => 'int',),
+				'total' => array('type' => 'number',),
+			),
+			array(
+				'separator' => ';',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => TRUE,
+			));
+
+		$expected = array(
+			array('id' => 1, 'date' => '2017-05-23', 'total' => 13257.54),
+			array('id' => 2, 'date' => '2018-07-14', 'total' =>  5447.75),
+			array('id' => 3, 'date' => '2019-11-23', 'total' =>  4168.48),
+			array('id' => 4, 'date' => '2020-02-01', 'total' => 41647.41),
+			array('id' => 5, 'date' => '2022-12-20', 'total' =>  2345.34),
+		);
+
+		foreach ($reader as $i => $row) {
+			$this->assertSame($expected[$i-1], $row);
+		}
+		// EOF?
+		$this->assertFalse($reader->valid());
+
+		unset($reader);
+
+
+		// Test 2
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-header.csv')),
+			array(
+				'code' => array('type' => 'string',),
+				'date' => array(),
+				'id' => array('type' => 'int',),
+				'timestamp' => array('type' => 'int',),
+				'description' => array('type' => 'string',),
+				'active' => array('type' => 'boolean',),
+			),
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => TRUE,
+			));
+
+		$expected = array(
+array('id' => 2581, 'date' => '1976-06-09', 'timestamp' => 1313289800965, 'code' => 'VZFRG', 'description' => 'indonesia tunes zinc soma passwords',              'active' => TRUE),
+array('id' => 2582, 'date' => '2003-12-26', 'timestamp' => 690797645152,  'code' => 'EPRIJ', 'description' => 'mh hear vacuum perform sample',                    'active' => FALSE),
+array('id' => 2583, 'date' => '2003-11-03', 'timestamp' => 89510027403,   'code' => 'QEPBU', 'description' => 'healing earned borough casting mas',               'active' => FALSE),
+array('id' => 2584, 'date' => '1985-02-27', 'timestamp' => 534860248553,  'code' => 'TTGDF', 'description' => 'tied kodak reg translation editing',               'active' => FALSE),
+array('id' => 2585, 'date' => '1989-09-26', 'timestamp' => 723368268878,  'code' => 'EQWLW', 'description' => 'candidate retail meetup arab can',                 'active' => FALSE),
+array('id' => 2586, 'date' => '2014-06-01', 'timestamp' => 672166143946,  'code' => 'UWQWI', 'description' => 'tigers volkswagen encountered involve j',          'active' => FALSE),
+array('id' => 2587, 'date' => '2009-01-15', 'timestamp' => 427251486194,  'code' => 'SRYWB', 'description' => 'briefing bachelor conservative allen nutritional', 'active' => TRUE),
+array('id' => 2588, 'date' => '1979-09-21', 'timestamp' => 711559059047,  'code' => 'SKSYN', 'description' => 'losing lies pictures role throughout',             'active' => FALSE),
+array('id' => 2589, 'date' => '1979-03-18', 'timestamp' => 1123389328384, 'code' => 'QQNKN', 'description' => 'lambda poly meat gamespot wear',                   'active' => TRUE),
+array('id' => 2590, 'date' => '1984-02-17', 'timestamp' => 730277074193,  'code' => 'KYZYX', 'description' => 'closely artwork trigger atmospheric retrieve',     'active' => FALSE),
+array('id' => 2591, 'date' => '1972-04-13', 'timestamp' => 531766732563,  'code' => 'UJSQN', 'description' => 'liked rolling least extent norfolk',               'active' => FALSE),
+array('id' => 2592, 'date' => '1993-08-30', 'timestamp' => 1138205375884, 'code' => 'AHXZX', 'description' => 'da solve tim retailer vendors',                    'active' => TRUE),
+array('id' => 2593, 'date' => '1997-07-27', 'timestamp' => 1295665688872, 'code' => 'ZBAJZ', 'description' => 'horse circles inline by alt',                      'active' => FALSE),
+array('id' => 2594, 'date' => '2003-09-17', 'timestamp' => 993751636118,  'code' => 'PBQLP', 'description' => 'that emission substances distance number',         'active' => TRUE),
+array('id' => 2595, 'date' => '1990-12-21', 'timestamp' => 1229443276959, 'code' => 'OYBMN', 'description' => 'deborah jokes love healing marks',                 'active' => FALSE),
+array('id' => 2596, 'date' => '1986-12-24', 'timestamp' => 582241070063,  'code' => 'OVESV', 'description' => 'geometry anna verse biography watching',           'active' => TRUE),
+array('id' => 2597, 'date' => '2009-08-31', 'timestamp' => 1526658075554, 'code' => 'SJOLY', 'description' => 'monica rolled verified boulder prototype',         'active' => TRUE),
+array('id' => 2598, 'date' => '1981-10-20', 'timestamp' => 484246584583,  'code' => 'OICCL', 'description' => 'bingo relative cheapest average scuba',            'active' => TRUE),
+array('id' => 2599, 'date' => '1980-01-20', 'timestamp' => 697826670112,  'code' => 'AKKGL', 'description' => 'manchester changing unsubscribe soon gabriel',     'active' => TRUE),
+array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code' => 'CFEZF', 'description' => 'arrived practice waters generally converter',      'active' => FALSE),
+		);
+
+		foreach ($reader as $i => $row) {
+			if (!array_key_exists($i-1, $expected)) break;
+			$this->assertSame($expected[$i-1], $row);
+		}
+
+		unset($reader);
 	}
 
 	public function formatDetectionData(): array {
