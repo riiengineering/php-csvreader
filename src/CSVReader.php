@@ -24,7 +24,8 @@ class CSVReader implements \Iterator {
 	private $fh;
 	public array $columns;
 	private array $options;
-	private int $data_start;
+	private int $data_start = 0;
+	private int $row_start = 0;
 
 	private array $colmap;
 
@@ -117,6 +118,7 @@ class CSVReader implements \Iterator {
 				$this->options['separator'] = $first_line[4];
 			}
 			$this->data_start += strlen($first_line);
+			$this->row_start++;
 		}
 
 		if ('AUTO' === $this->options['separator']) {
@@ -157,6 +159,7 @@ class CSVReader implements \Iterator {
 					}
 				} else {
 					$this->data_start = ftell($this->fh);
+					$this->row_start++;
 				}
 			}
 		} else {
@@ -242,7 +245,7 @@ class CSVReader implements \Iterator {
 		return $this->it_curr;
 	}
 	public function currentRowNumber(): int {
-		return $this->it_row;
+		return $this->row_start + $this->it_row;
 	}
 
 	public function columnNameToNumber(string $colname): int {
