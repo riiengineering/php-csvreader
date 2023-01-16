@@ -1,0 +1,24 @@
+---
+name: stan
+on: [push, pull_request]
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: latest
+          tools: phpstan
+      - name: Information
+        run: |
+          php --version
+          phpstan --version
+      - name: Run static analysis
+        run: |
+          make sast || :
