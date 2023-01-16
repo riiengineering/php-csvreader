@@ -252,7 +252,7 @@ class CSVReader implements \Iterator {
 		if (!array_key_exists($colname, $this->colmap)) {
 			throw new \InvalidArgumentException("unknown column: ${colname}");
 		}
-		return $this->colmap[$colname];
+		return $this->colmap[$colname]+1;
 	}
 
 	public function nextRow(): ?array {
