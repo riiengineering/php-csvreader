@@ -18,7 +18,7 @@ final class fieldparser_test extends TestCase {
 		}
 	}
 
-	public function testBooleanParser(): void {
+	public function test_boolean_parser(): void {
 		$trues = array('true', 'on', 'yes', '1');
 		$falses = array('false', 'off', 'no', '0');
 
@@ -35,7 +35,7 @@ final class fieldparser_test extends TestCase {
 		$this->assertNull($fn('foo'));
 	}
 
-	public function testNumberParser(): void {
+	public function test_number_parser(): void {
 		$fn = '\riiengineering\csvreader\fieldparser\parse_number';
 
 		$this->assertNull($fn(''));
@@ -46,7 +46,7 @@ final class fieldparser_test extends TestCase {
 		$this->assertNull($fn('-f'));
 	}
 
-	public function testNumberParserHex(): void {
+	public function test_number_parser_hex(): void {
 		$fn = '\riiengineering\csvreader\fieldparser\parse_number';
 
 		$this->assertSame(0, $fn('0x'));
@@ -55,7 +55,7 @@ final class fieldparser_test extends TestCase {
 		$this->assertSame(32, $fn('0x20'));
 	}
 
-	public function testNumberParserExcelFormat(): void {
+	public function test_number_parser_excel_format(): void {
 		$inputs = array(
 			// ints
 			'123',

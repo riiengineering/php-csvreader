@@ -19,7 +19,7 @@ final class endings_filter_test extends TestCase {
 		fclose($fh);
 	}
 
-	public function testCanProcessCRLineEndings(): void {
+	public function test_can_process_CR_line_endings(): void {
 		foreach (array('mac2unix', 'cr2lf') as $filter) {
 			$this->_compare_against_file(
 				implode(DIRECTORY_SEPARATOR, array(self::FIXTURES_DIR, 'test1', 'cr.txt')),
@@ -28,7 +28,7 @@ final class endings_filter_test extends TestCase {
 		}
 	}
 
-	public function testCanProcessCRLFLineEndings(): void {
+	public function test_can_process_CRLF_line_endings(): void {
 		foreach (array('dos2unix', 'crlf2lf') as $filter) {
 			$this->_compare_against_file(
 				implode(DIRECTORY_SEPARATOR, array(self::FIXTURES_DIR, 'test1', 'crlf.txt')),
@@ -37,7 +37,7 @@ final class endings_filter_test extends TestCase {
 		}
 	}
 
-	public function testCanProcessLFLineEndings(): void {
+	public function test_can_process_LF_line_endings(): void {
 		foreach (array('unix2unix', 'lf2lf') as $filter) {
 			$this->_compare_against_file(
 				implode(DIRECTORY_SEPARATOR, array(self::FIXTURES_DIR, 'test1', 'lf.txt')),

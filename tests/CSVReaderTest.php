@@ -9,7 +9,7 @@ use riiengineering\csvreader\CSVReader;
 final class CSVReaderTest extends TestCase {
 	public const DATA_DIR = __DIR__ . '/fixtures/data';
 
-	public function testCSVReadNextRow(): void {
+	public function test_CSV_read_next_row(): void {
 		$reader = new CSVReader(
 			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test1-simple-header.csv')),
 			array('id', 'date', 'total'),
@@ -35,7 +35,7 @@ final class CSVReaderTest extends TestCase {
 		$this->assertNull($reader->nextRow());
 	}
 
-	public function testCSVReadForeach(): void {
+	public function test_CSV_read_foreach(): void {
 		$reader = new CSVReader(
 			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test1-simple-header.csv')),
 			array('id', 'date', 'total'),
@@ -62,7 +62,7 @@ final class CSVReaderTest extends TestCase {
 		$this->assertFalse($reader->valid());
 	}
 
-	public function testColumnsFromHeaderDetection(): void {
+	public function test_columns_from_header_detection(): void {
 		$reader = new CSVReader(
 			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-header.csv')),
 			NULL,
@@ -82,7 +82,8 @@ final class CSVReaderTest extends TestCase {
 		$this->assertCount(100, $reader);
 	}
 
-	public function testHeaderDetection(): void {  // test if the code detects that the file has no header
+	public function test_header_detection(): void {
+		// test if the code detects that the file has no header
 		$columns = array(
 			'id' => array(),
 			'date' => array(),
@@ -110,7 +111,7 @@ final class CSVReaderTest extends TestCase {
 		$this->assertCount(100, $reader);
 	}
 
-	public function testTypeConversions(): void {
+	public function test_type_conversions(): void {
 		// Test 1
 
 		$reader = new CSVReader(
@@ -263,7 +264,7 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 		unset($reader);
 	}
 
-	public function formatDetectionData(): array {
+	public function data_format_detection(): array {
 		return array(
 			array('cars/Export/LibreOffice 4.0/UTF-8_comma.csv', array(
 				'line-separator' => "\n",
@@ -379,9 +380,9 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 	}
 
 	/**
-	 * @dataProvider formatDetectionData
+	 * @dataProvider data_format_detection
 	 */
-	public function testFormatDetection(string $file, array $options): void {
+	public function test_format_detection(string $file, array $options): void {
 		$reader = new \riiengineering\csvreader\CSVReader(
 			self::DATA_DIR . DIRECTORY_SEPARATOR . $file,
 			NULL,
@@ -412,7 +413,7 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 			array_keys($reader->columns));
 	}
 
-	public function testUTF8MultibyteDetection(): void {
+	public function test_UTF8_multibyte_detection(): void {
 		// Explanation: this file contains a lot of 3-byte UTF-8 EURO
 		// characters.  When the encoding detection code uses a window to
 		// detect the encoding, there is a high likelihood that it will
@@ -433,7 +434,7 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 		$this->assertSame('UTF-8', $reader->options()['encoding']);
 	}
 
-	public function testReadLargeFile(): void {
+	public function test_read_large_file(): void {
 		$file = implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', '1Mlines.tsv.gz'));
 		$fh = gzopen($file, 'r');
 
