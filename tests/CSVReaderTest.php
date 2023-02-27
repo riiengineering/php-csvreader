@@ -111,6 +111,42 @@ final class CSVReaderTest extends TestCase {
 		$this->assertCount(100, $reader);
 	}
 
+	public function test_separator_check(): void {
+		// multiple column input with incorrect separator
+		$this->expectException(RuntimeException::class);
+		$this->expectExceptionMessage('failed to parse this file; please ensure the columns are separated by \';\' characters');
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'list.txt')),
+			array('word1', 'word2', 'word3', 'word4', 'word5'),
+			array(
+				'separator' => ';',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => FALSE,
+			));
+	}
+
+	public function test_separator_check_one_column(): void {
+		// single column input
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'list.txt')),
+			array('words'),
+			array(
+				'separator' => ';',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => FALSE,
+			));
+
+		foreach ($reader as $row) {
+			$this->assertSame(count(explode(',', $row['words'])), 5);
+		}
+
+	}
+
 	public function test_type_conversions(): void {
 		// Test 1
 

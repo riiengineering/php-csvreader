@@ -59,8 +59,12 @@ class CSVReader implements \Iterator {
 			// ignore
 		} elseif (array_keys($columns) === range(0, count($columns)-1)) {
 			$this->columns = array_fill_keys($columns, array());
+			$required_columns = $this->columns;
 		} else {
 			$this->columns = $columns;
+			$required_columns = array_filter(
+				$this->columns,
+				fn($props) => $props['required'] ?? TRUE);
 		}
 
 		$this->options = array_merge(self::OPTIONS_DEFAULTS, $options);
@@ -129,7 +133,8 @@ class CSVReader implements \Iterator {
 		$first_row = $this->getRow();
 
 		// check if separator makes sense
-		if (is_null($first_row) || 2 > count($first_row)) {
+		$min_columns = (isset($required_columns) ? count($required_columns) : 1);
+		if (is_null($first_row) || count($first_row) < $min_columns) {
 			throw new \RuntimeException(
 				"failed to parse this file; please ensure the columns are separated by '{$this->options['separator']}' characters");
 		}
@@ -143,6 +148,7 @@ class CSVReader implements \Iterator {
 					$this->columns = array_fill_keys(
 						array_map('self::colslug', $first_row),
 						array());
+					$required_columns = $this->columns;
 				}
 				$this->colmap = $this->map_from_headerline($first_row);
 				if (count($this->colmap) < count($this->columns)) {
