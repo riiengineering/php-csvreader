@@ -323,6 +323,13 @@ class CSVReader implements \Iterator {
 
 		$res = array();
 		foreach ($this->colmap as $k => $i) {
+			if (!array_key_exists($i, $row)) {
+				if ($this->columns[$k]['required'] ?? TRUE) {
+					$res[$k] = NULL;
+				}
+				continue;
+			}
+
 			$value = $row[$i];
 
 			$coltype = array_key_exists('type', $this->columns[$k])

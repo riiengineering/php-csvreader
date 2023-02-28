@@ -165,6 +165,30 @@ final class CSVReaderTest extends TestCase {
 			));
 	}
 
+	public function test_required_column_null_fill(): void {
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test5-missing-fields.csv')),
+			array(
+				'Date' => array('type' => 'string', 'required' => TRUE),
+				'ID' => array('type' => 'int', 'required' => TRUE),
+				'Total' => array('type' => 'number', 'required' => TRUE),
+				'VAT' => array('type' => 'number', 'required' => TRUE),
+			),
+			array(
+				'separator' => ';',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'require-header-line' => TRUE,
+				'column-order-from-header-line' => TRUE,
+			));
+
+		// check that the columns were mapped correctly
+		$this->assertSame(
+			array('ID' => 1, 'Date' => '2017-05-23', 'Total' => 13257.54, 'VAT' => NULL),
+			$reader->nextRow());
+	}
+
 	public function test_optional_columns_from_header_detection(): void {
 		// test if the code detects the columns of the file if some optional
 		// columns are missing
