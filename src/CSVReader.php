@@ -18,6 +18,7 @@ class CSVReader implements \Iterator {
 		'encoding' => 'AUTO',
 		'line-separator' => 'AUTO',
 		'respect-sep-line' => TRUE,
+		'require-header-line' => FALSE,
 		'column-order-from-header-line' => TRUE,
 	);
 
@@ -168,6 +169,9 @@ class CSVReader implements \Iterator {
 					$this->row_start++;
 				}
 			}
+		} elseif ($this->options['require-header-line']) {
+			throw new \RuntimeException(
+				'the given input file contains no header line');
 		} else {
 			// no header -> rewind
 			fseek($this->fh, $this->data_start, SEEK_SET);

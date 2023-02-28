@@ -111,6 +111,22 @@ final class CSVReaderTest extends TestCase {
 		$this->assertCount(100, $reader);
 	}
 
+	public function test_required_header_missing_exception(): void {
+		$this->expectException(\RuntimeException::class);
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-noheader.csv')),
+			NULL,
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'require-header-line' => TRUE,
+				'column-order-from-header-line' => TRUE,
+			));
+	}
+
 	public function test_separator_check(): void {
 		// multiple column input with incorrect separator
 		$this->expectException(RuntimeException::class);
