@@ -62,6 +62,44 @@ final class CSVReaderTest extends TestCase {
 		$this->assertFalse($reader->valid());
 	}
 
+	public function test_invalid_column_names_exception(): void {
+		$columns = array(
+			'0ID',
+			'Name',
+			'2',
+			'3',
+			'4',
+		);
+
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage(
+			'columns specification contains invalid column names: '
+			. implode(', ', array_filter($columns, fn($k) => is_numeric($k[0]))));
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'list.txt')),
+			$columns);
+	}
+
+	public function test_invalid_column_names_detected_exception(): void {
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage(
+			'columns specification contains invalid column names: 1word, 2words, 3words');
+
+		$reader = new CSVReader(
+			implode(
+				DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test3-invalid-header.csv')),
+			NULL,
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'require-header-line' => TRUE,
+				'column-order-from-header-line' => TRUE,
+			));
+	}
+
 	public function test_columns_from_header_detection(): void {
 		$reader = new CSVReader(
 			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-header.csv')),
@@ -129,7 +167,7 @@ final class CSVReaderTest extends TestCase {
 
 	public function test_separator_check(): void {
 		// multiple column input with incorrect separator
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('failed to parse this file; please ensure the columns are separated by \';\' characters');
 
 		$reader = new CSVReader(

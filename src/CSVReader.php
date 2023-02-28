@@ -67,6 +67,7 @@ class CSVReader implements \Iterator {
 				$this->columns,
 				fn($props) => $props['required'] ?? TRUE);
 		}
+		$this->check_column_names();
 
 		$this->options = array_merge(self::OPTIONS_DEFAULTS, $options);
 
@@ -150,6 +151,7 @@ class CSVReader implements \Iterator {
 						array_map('self::colslug', $first_row),
 						array());
 					$required_columns = $this->columns;
+					$this->check_column_names();
 				}
 				$this->colmap = $this->map_from_headerline($first_row);
 				if (count($this->colmap) < count($this->columns)) {
@@ -193,6 +195,25 @@ class CSVReader implements \Iterator {
 
 	public function __destruct() {
 		fclose($this->fh);
+	}
+
+	private function check_column_names(): void {
+		if (!isset($this->columns)) return;
+
+		// column names must not start with numbers as this interferes with
+		// header detection which assumes that headers don’t start with a
+		// number and PHP converts numeric string array keys to integers
+		// implicitly.
+
+		$illegal_columns = array_filter(
+			$this->columns,
+			fn($k) => 1 !== preg_match('/^[a-z_-][a-z0-9_-]*/i', strval($k)),
+			ARRAY_FILTER_USE_KEY);
+		if (0 < count($illegal_columns)) {
+			throw new \InvalidArgumentException(
+				'columns specification contains invalid column names: '
+				. implode(', ', array_keys($illegal_columns)));
+		}
 	}
 
 	private function reencode(string $input_encoding): void {
@@ -299,10 +320,9 @@ class CSVReader implements \Iterator {
 					break;
 				case 'string':
 					break;
-									default:
-						throw new \InvalidArgumentException(
-							"{$this->columns[$k]['type']} is not a valid column type");
-						break;
+				default:
+					throw new \InvalidArgumentException(
+						"{$this->columns[$k]['type']} is not a valid column type");
 			}
 
 			$res[$k] = $value;
