@@ -9,12 +9,12 @@ jobs:
         #os: [ ubuntu-latest, macos-latest ]
         #php-version: [ 5.3, 5.4, 5.5, 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2, 8.3 ]
         os: [ ubuntu-latest, macos-latest ]
-        php-version: [ 7.4, 8.0, 8.1, 8.2, 8.3 ]
+        php-version: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
         exclude:
-          - { os: macos-latest, php-version: 7.4 }
-          - { os: macos-latest, php-version: 8.0 }
-          - { os: macos-latest, php-version: 8.1 }
-          - { os: macos-latest, php-version: 8.3 }
+          - { os: macos-latest, php-version: '7.4' }
+          - { os: macos-latest, php-version: '8.0' }
+          - { os: macos-latest, php-version: '8.1' }
+          - { os: macos-latest, php-version: '8.3' }
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository code
@@ -26,14 +26,49 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: iconv
-          tools: phpunit
+      - name: Install PHPUnit
+        env:
+          MATRIX_OS: ${{ matrix.os }}
+          MATRIX_PHP: ${{ matrix.php-version }}
+        run: |
+          case ${MATRIX_PHP}
+          in
+              (5.[345])
+                phpunit_version=4 ;;
+              (5.6)
+                phpunit_version=5 ;;
+              (7.0)
+                phpunit_version=6 ;;
+              (7.1)
+                phpunit_version=7 ;;
+              (7.2)
+                phpunit_version=8 ;;
+              (7.[34]|8.0)
+                phpunit_version=9 ;;
+          esac
+
+          # Download PHPUnit PHAR
+          curl -s -o phpunit.phar -L "https://phar.phpunit.de/phpunit${phpunit_version:+-}${phpunit_version-}.phar"
+
+          # Check PGP signature
+          curl -s -o phpunit.phar.asc -L "https://phar.phpunit.de/phpunit${phpunit_version:+-}${phpunit_version-}.phar.asc"
+          gpg -q --keyserver hkps://pgpkeys.eu --recv-keys 0x4AA394086372C20A
+          gpg -q --verify phpunit.phar.asc || exit 1
+          rm phpunit.phar.asc
+
+          chmod u+x phpunit.phar
       - name: Information
         run: |
           php --version
-          phpunit --version
+          ./phpunit.phar --version
       - name: Compile
+        env:
+          PHP: php${{ matrix.php-version }}
         run: |
           make all
       - name: Run unit tests
+        env:
+          PHP: php${{ matrix.php-version }}
+          PHPUNIT: php${{ matrix.php-version }} ./phpunit.phar
         run: |
           make test
