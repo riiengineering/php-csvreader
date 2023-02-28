@@ -633,17 +633,16 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 			self::DATA_DIR . DIRECTORY_SEPARATOR . $file,
 			NULL,
 			array(
-				'separator' => $options['separator'],
-				'line-separator' => 'AUTO',
 				'encoding' => 'AUTO',
-			)
-		);
+				'line-separator' => 'AUTO',
+				'separator' => 'AUTO',
+			));
 		$options_detected = $reader->options();
 
-		$is = array();
-		foreach ($options as $k => $_) {
-			$is[$k] = $options_detected[$k];
-		}
+		$is = array_filter(
+			$options_detected,
+			fn($k) => array_key_exists($k, $options),
+			ARRAY_FILTER_USE_KEY);
 
 		$this->assertEquals($options, $is);
 

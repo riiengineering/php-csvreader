@@ -146,7 +146,7 @@ class CSVReader implements \Iterator {
 		}
 
 		if ('AUTO' === $this->options['separator']) {
-			throw new Exception('not implemented');
+			$this->options['separator'] = format\detect_column_separator($this->fh);
 		}
 
 		fseek($this->fh, $this->data_start, SEEK_SET);

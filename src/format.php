@@ -15,6 +15,35 @@ function _read_file_head($fh, int $size): string {
 	return $s;
 }
 
+function detect_column_separator($fh): string {
+	// NOTE: run this function after converting line separators.
+	$quote = '"';
+	$sep = ';'; $ncols = 0;
+
+	$prev_pos = ftell($fh);
+	foreach (array(',', ';', "\t") as $s) {
+		rewind($fh);
+		$line = fgets($fh);
+		if (FALSE === $line) continue;
+
+		// quoted columns indicate a correct separator
+		if (1 === preg_match("/[$s][${quote}][^${quote}]*[${quote}][$s]/", $line)) {
+			$sep = $s;
+			break;
+		}
+
+		$cols = explode($s, $line);
+		if (count($cols) > $ncols) {
+			$sep = $s;
+			$ncols = count($cols);
+		}
+	}
+	if (FALSE !== $prev_pos) {
+		fseek($fh, $prev_pos, SEEK_SET);
+	}
+	return $sep;
+}
+
 function detect_line_separator($fh): string {
 	// NOTE: run this function after multi-byte encoding detection and conversion, since one byte of the multi-byte encoding could be an \r/\n leading to incorrect detection.
 	// FIXME: what if 1024 is in between \r and \n?
