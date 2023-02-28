@@ -189,6 +189,42 @@ final class CSVReaderTest extends TestCase {
 			$reader->nextRow());
 	}
 
+	public function test_variable_columns_file(): void {
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test6-variable-columns.csv')),
+			array(
+				'A' => array('required' => TRUE),
+				'B' => array('required' => TRUE),
+				'C' => array('required' => TRUE),
+				'D' => array('required' => FALSE),
+			),
+			array(
+				'separator' => ';',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'require-header-line' => FALSE,
+				'column-order-from-header-line' => FALSE,
+			));
+
+		// check that the columns are interpreted "correctly"
+		$this->assertSame(
+			array('A' => 'q', 'B' => 'w', 'C' => 'e', 'D' => 'r'),
+			$reader->nextRow());
+		$this->assertSame(
+			array('A' => '1', 'B' => '2', 'C' => '3'),
+			$reader->nextRow());
+		$this->assertSame(
+			array('A' => '1', 'B' => '2', 'C' => '3', 'D' => '4'),
+			$reader->nextRow());
+		$this->assertSame(
+			array('A' => '1', 'B' => '2', 'C' => NULL),
+			$reader->nextRow());
+		$this->assertSame(
+			array('A' => '1', 'B' => '2', 'C' => '3', 'D' => '4'),
+			$reader->nextRow());
+	}
+
 	public function test_optional_columns_from_header_detection(): void {
 		// test if the code detects the columns of the file if some optional
 		// columns are missing
@@ -631,6 +667,7 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 		// making the string non-valid UTF-8. This test is to check if the
 		// code handles partial trailing characters correctly.
 
+		// TODO: also check combined characters https://en.wikipedia.org/wiki/Regional_indicator_symbol
 		$file = implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test-utf8euro.csv'));
 
 		$reader = new CSVReader(
