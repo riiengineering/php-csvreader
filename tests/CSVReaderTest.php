@@ -165,6 +165,102 @@ final class CSVReaderTest extends TestCase {
 			));
 	}
 
+	public function test_optional_columns_from_header_detection(): void {
+		// test if the code detects the columns of the file if some optional
+		// columns are missing
+
+		$columns = array(
+			'id' => array('required' => TRUE),
+			'date' => array('required' => TRUE),
+			'timestamp' => array('required' => FALSE),
+			'code' => array('required' => TRUE),
+			'extra' => array('required' => FALSE),
+			'description' => array('required' => TRUE),
+			'language' => array('required' => FALSE),
+			'active' => array('required' => FALSE),
+			'edited' => array('required' => FALSE),
+		);
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-header.csv')),
+			$columns,
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'require-header-line' => TRUE,
+				'column-order-from-header-line' => TRUE,
+		));
+
+		// check that the columns were mapped correctly
+		$this->assertSame(
+			array('id' => '2581', 'date' => '1976-06-09', 'timestamp' => '1313289800965', 'code' => 'VZFRG', 'description' => 'indonesia tunes zinc soma passwords', 'active' => 'true'),
+			$reader->nextRow());
+	}
+
+	public function test_optional_columns_last_without_header(): void {
+		// test if the code detects the columns correctly if not all are
+		// specified, but optional columns are strictly following required ones
+		// and no header is present in the file
+
+		$columns = array(
+			'id' => array('required' => TRUE),
+			'date' => array('required' => TRUE),
+			'timestamp' => array('required' => TRUE),
+			'code' => array('required' => TRUE),
+			'description' => array('required' => TRUE),
+			'active' => array('required' => FALSE),
+			'edited' => array('required' => FALSE),
+			'language' => array('required' => FALSE),
+			'extra' => array('required' => FALSE),
+		);
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-noheader.csv')),
+			$columns,
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => TRUE,
+		));
+
+		// check that the columns were mapped correctly
+		$this->assertSame(
+			array('id' => '2881', 'date' => '2001-04-03', 'timestamp' => '1237270885428', 'code' => 'EKVLP', 'description' => 'tc entitled hoping vpn workshop', 'active' => 'true'),
+			$reader->nextRow());
+	}
+
+	public function test_optional_columns_mixed_without_header_exception(): void {
+		// test if the code throws an exception if required columns are mixed
+		// with optional ones and no header is present in the file
+
+		$this->expectException(\InvalidArgumentException::class);
+
+		$reader = new CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(self::DATA_DIR, 'csv', 'test2-noheader.csv')),
+			array(
+				'id' => array('required' => TRUE),
+				'date' => array('required' => TRUE),
+				'timestamp' => array('required' => FALSE),
+				'code' => array('required' => TRUE),
+				'extra' => array('required' => FALSE),
+				'description' => array('required' => TRUE),
+				'language' => array('required' => FALSE),
+				'active' => array('required' => FALSE),
+				'edited' => array('required' => FALSE),
+			),
+			array(
+				'separator' => ',',
+				'line-separator' => "\n",
+				'encoding' => 'ASCII',
+				'respect-sep-line' => FALSE,
+				'column-order-from-header-line' => TRUE,
+		));
+	}
+
 	public function test_separator_check(): void {
 		// multiple column input with incorrect separator
 		$this->expectException(\RuntimeException::class);

@@ -38,6 +38,8 @@ class CSVReader implements \Iterator {
 			?array $columns,
 			array $options = array()) {
 
+		$this->options = array_merge(self::OPTIONS_DEFAULTS, $options);
+
 		if (is_string($file)) {
 			if (!file_exists($file)) {
 				throw new \RuntimeException("${file}: No such file");
@@ -66,10 +68,26 @@ class CSVReader implements \Iterator {
 			$required_columns = array_filter(
 				$this->columns,
 				fn($props) => $props['required'] ?? TRUE);
+
+			if (count($required_columns) < count($this->columns)
+			    && !$this->options['require-header-line']) {
+				// some columns are optional, ensure that the optional columns
+				// are trailing, so that the columns can be mapped left-to-right
+				// in case the header line is missing
+				array_reduce(
+					$this->columns,
+					function (bool $acc, array $props): bool {
+						$req = $props['required'] ?? TRUE;
+						if (!$acc && $req) {
+							throw new \InvalidArgumentException(
+								'$columns contains optional columns mixed with required columns but require-header-line is FALSE. Either require-header-line or make optional columns follow required columns.');
+						}
+						return $req;
+					},
+					TRUE);
+			}
 		}
 		$this->check_column_names();
-
-		$this->options = array_merge(self::OPTIONS_DEFAULTS, $options);
 
 		$this->data_start = ftell($this->fh);
 		if (FALSE === $this->data_start) $this->data_start = 0;
@@ -133,48 +151,53 @@ class CSVReader implements \Iterator {
 
 		fseek($this->fh, $this->data_start, SEEK_SET);
 		$first_row = $this->getRow();
+		$first_num_cols = count($first_row);
 
 		// check if separator makes sense
-		$min_columns = (isset($required_columns) ? count($required_columns) : 1);
-		if (is_null($first_row) || count($first_row) < $min_columns) {
+		$min_columns = (isset($required_columns) ? count($required_columns) : 2);
+		if (is_null($first_row) || $first_num_cols < $min_columns/2) {
 			throw new \RuntimeException(
 				"failed to parse this file; please ensure the columns are separated by '{$this->options['separator']}' characters");
 		}
 
-		if (!is_numeric($first_row[0][0])) {
+		$has_headerline = FALSE;
+		if (!is_numeric($first_row[0][0]) && $this->options['column-order-from-header-line']) {
 			// process header
-			// assuming header rows are rows not starting with a number
-			if ($this->options['column-order-from-header-line']) {
-				if (!isset($this->columns)) {
-					// get columns from header line
-					$this->columns = array_fill_keys(
-						array_map('self::colslug', $first_row),
-						array());
-					$required_columns = $this->columns;
-					$this->check_column_names();
-				}
-				$this->colmap = $this->map_from_headerline($first_row);
-				if (count($this->colmap) < count($this->columns)) {
-					// not all columns could be mapped
-					if (count($this->colmap) < count($this->columns)/2) {
-						// probably not a header
-						unset($this->colmap);
-
-						// no header -> rewind
-						fseek($this->fh, $this->data_start, SEEK_SET);
-					} else {
-						throw new \RuntimeException(
-							'not all columns could be mapped from header');
-					}
-				} else {
-					$this->data_start = ftell($this->fh);
-					$this->row_start++;
-				}
+			// assuming header rows are rows not starting with a digit, because
+			// column names must not start with digit
+			if (!isset($this->columns)) {
+				// get $columns from header line
+				$this->columns = array_fill_keys(
+					array_map('self::colslug', $first_row),
+					array());
+				$required_columns = $this->columns;
+				$this->check_column_names();
 			}
-		} elseif ($this->options['require-header-line']) {
-			throw new \RuntimeException(
-				'the given input file contains no header line');
-		} else {
+
+			$this->colmap = $this->map_from_headerline($first_row);
+
+			if (count(array_intersect_key($required_columns, $this->colmap)) < count($required_columns)) {
+				// not all required columns could be mapped
+				if (count($this->colmap) < count($required_columns)/2) {
+					// probably not a header
+					unset($this->colmap);
+				} else {
+					throw new \RuntimeException(
+						'not all required columns could be mapped from header line');
+				}
+			} else {
+				$this->data_start = ftell($this->fh);
+				$this->row_start++;
+				$has_headerline = TRUE;
+			}
+		}
+
+		if (!$has_headerline) {
+			if ($this->options['require-header-line']) {
+				throw new \RuntimeException(
+					'the given input file contains no header line');
+			}
+
 			// no header -> rewind
 			fseek($this->fh, $this->data_start, SEEK_SET);
 		}
@@ -188,8 +211,13 @@ class CSVReader implements \Iterator {
 		}
 
 		if (!isset($this->columns)) {
-			throw new RuntimeException(
-				'no $columns given and input file is lacking a header line');
+			if ($this->options['column-order-from-header-line']) {
+				throw new RuntimeException(
+					'no $columns given and input file is lacking a header line');
+			} else {
+				throw new RuntimeException(
+					'no $columns given and column-order-from-header-line is disabled');
+			}
 		}
 	}
 
