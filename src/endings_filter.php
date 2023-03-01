@@ -4,6 +4,7 @@ class endings_filter extends php_user_filter {
 	public string $input_line_ending;
 	public string $output_line_ending;
 
+	#[\ReturnTypeWillChange]
 	public function filter(/* resource */ $in, /*resource */ $out, /* int */ &$consumed, /* bool */ $closing) /*: int */ {
 		$resize = strlen($this->input_line_ending) != strlen($this->output_line_ending);
 
