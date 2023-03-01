@@ -12,11 +12,11 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'format.php');
 
 class CSVReader implements \Iterator {
 	public const OPTIONS_DEFAULTS = array(
-		'separator' => ',',
-		'enclosure' => '"',
-		'escape' => '\\',
 		'encoding' => 'AUTO',
 		'line-separator' => 'AUTO',
+		'separator' => 'AUTO',
+		'enclosure' => '"',
+		'escape' => '\\',
 		'respect-sep-line' => TRUE,
 		'require-header-line' => FALSE,
 		'column-order-from-header-line' => TRUE,
