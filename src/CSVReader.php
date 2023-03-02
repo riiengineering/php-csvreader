@@ -125,11 +125,16 @@ class CSVReader implements \Iterator {
 			$this->options['encoding'] = format\guess_encoding(
 				$this->fh, $this->options['line-separator']);
 
-			if (is_null($this->options['encoding']) && $this->options['fallback-encoding']) {
+			if (is_null($this->options['encoding'])
+			    && !empty($this->options['fallback-encoding'])) {
 				$this->options['encoding'] = $this->options['fallback-encoding'];
 			}
 
-			$this->reencode($this->options['encoding']);
+			// if the encoding is known, reencode file to UTF-8, otherwise try
+			// to work with what we have
+			if (!is_null($this->options['encoding'])) {
+				$this->reencode($this->options['encoding']);
+			}
 		}
 
 		fseek($this->fh, $this->data_start, SEEK_SET);
