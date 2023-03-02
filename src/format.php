@@ -15,10 +15,10 @@ function _read_file_head($fh, int $size): string {
 	return $s;
 }
 
-function detect_column_separator($fh): string {
+function detect_column_separator(
+		$fh, string $default_separator = ';', string $quote = '"'): string {
 	// NOTE: run this function after converting line separators.
-	$quote = '"';
-	$sep = ';'; $ncols = 0;
+	$sep = $default_separator; $ncols = 1;
 
 	$prev_pos = ftell($fh);
 	foreach (array(',', ';', "\t") as $s) {
@@ -27,7 +27,7 @@ function detect_column_separator($fh): string {
 		if (FALSE === $line) continue;
 
 		// quoted columns indicate a correct separator
-		if (1 === preg_match("/[$s][${quote}][^${quote}]*[${quote}][$s]/", $line)) {
+		if (1 === preg_match("/(^|[$s])[${quote}][^${quote}]*[${quote}]([$s]|\$)/", $line)) {
 			$sep = $s;
 			break;
 		}

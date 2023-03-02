@@ -15,6 +15,7 @@ class CSVReader implements \Iterator {
 		'encoding' => 'AUTO',
 		'line-separator' => 'AUTO',
 		'separator' => 'AUTO',
+		'fallback-separator' => ';',
 		'enclosure' => '"',
 		'escape' => '\\',
 		'respect-sep-line' => TRUE,
@@ -151,7 +152,10 @@ class CSVReader implements \Iterator {
 		}
 
 		if ('AUTO' === $this->options['separator']) {
-			$this->options['separator'] = format\detect_column_separator($this->fh);
+			$this->options['separator'] = format\detect_column_separator(
+				$this->fh,
+				$this->options['fallback-separator'],
+				$this->options['enclosure']);
 		}
 
 		fseek($this->fh, $this->data_start, SEEK_SET);
