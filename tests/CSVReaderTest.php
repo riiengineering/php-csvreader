@@ -698,4 +698,31 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 		}
 		$this->assertSame(1000000, $i);
 	}
+
+	public function data_non_csv_files(): array {
+		return array_map(fn($f) => array($f,), array(
+			'rii.png', 'some.xml'
+		));
+	}
+
+	/**
+	 * @dataProvider data_non_csv_files
+	 */
+	public function test_non_csv_file_exception(string $filename): void {
+		// NOTE: this test is somewhat fragile because CSVReader does not have
+		//       any heuristics to determine if a file "looks like" a CSV file.
+		//       Anything that is remotely parsable as CSV will be.
+
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage('failed to parse this file');
+
+		// NOTE: specifying $columns is important here, because the parser
+		//       will otherwise guess something unsensible.
+		$reader = new \riiengineering\csvreader\CSVReader(
+			implode(DIRECTORY_SEPARATOR, array(
+				self::DATA_DIR, 'noncsv', $filename)),
+			array('a', 'b', 'c'));
+
+		$this->assertEquals(array(), $reader->nextRow());
+	}
 }

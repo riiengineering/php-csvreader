@@ -1,0 +1,4 @@
+<root>
+	<someelement>foo</someelement><bar disabled="1"/>
+	<p>lorem ipsum dolor <ellip/></p>
+</root>
