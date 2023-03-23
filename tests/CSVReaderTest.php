@@ -511,122 +511,213 @@ array('id' => 2600, 'date' => '2015-05-30', 'timestamp' => 872096121073,  'code'
 	}
 
 	public function data_format_detection(): array {
-		return array(
-			array('cars/Export/LibreOffice 4.0/UTF-8_comma.csv', array(
+		$fixtures = array(
+			array(
+				'file' => 'cars/Export/LibreOffice 4.0/UTF-8_comma.csv',
+				'generator' => 'LibreOffice 4.0',
 				'line-separator' => "\n",
 				'encoding' => 'UTF-8',
 				'separator' => ',',
-			)),
-			array('cars/Export/LibreOffice 4.0/UTF-8_semicolon.csv', array(
+			),
+			array(
+				'file' => 'cars/Export/LibreOffice 4.0/UTF-8_semicolon.csv',
+				'generator' => 'LibreOffice 4.0',
 				'line-separator' => "\n",
 				'encoding' => 'UTF-8',
 				'separator' => ';',
-			)),
-			/* array('cars/Export/LibreOffice 4.0/Windows1252_semicolon.csv', array(
-			   'line-separator' => "\n",
-			   'encoding' => 'Windows-1252',
-			   'separator' => ';',
-			   )), */
-			/* array('cars/Export/LibreOffice 4.0/MacRoman_comma.csv', array(
+			),
+			array(
+				'file' => 'cars/Export/LibreOffice 4.0/Windows1252_semicolon.csv',
+				'generator' => 'LibreOffice 4.0',
+				'line-separator' => "\n",
+				'encoding' => 'Windows-1252',
+				'separator' => ';',
+			),
+			/* array(
+			   'file' => 'cars/Export/LibreOffice 4.0/MacRoman_comma.csv',
+			   'generator' => 'LibreOffice 4.0',
 			   'line-separator' => "\n",
 			   'encoding' => 'Macintosh',
 			   'separator' => ',',
-			   )), */
-
-			array('cars/Export/Numbers 09/UTF-8.csv', array(
+			   ),
+			 */
+			array(
+				'file' => 'cars/Export/Numbers 09/UTF-8.csv',
+				'generator' => 'Numbers 09',
 				'line-separator' => "\r\n",
 				'encoding' => 'UTF-8',
 				'separator' => ',',
-			)),
-			/* array('cars/Export/Numbers 09/Latin1.csv', array(
+			),
+			/* array(
+			   'file' => 'cars/Export/Numbers 09/Latin1.csv',
+			   'generator' => 'Numbers 09',
 			   'line-separator' => "\r\n",
 			   'encoding' => 'ISO-8859-1',
 			   'separator' => ',',
-			   )), */
-
-			array('cars/Export/Office 2016/CSV.csv', array(
+			   ),
+			 */
+			array(
+				'file' => 'cars/Export/Office 2016/CSV.csv',
+				'generator' => 'MS Office 2016',
 				'line-separator' => "\r\n",
 				'encoding' => 'Windows-1252',
 				'separator' => ';',
-			)),
-			array('cars/Export/Office 2016/Macintosh.csv', array(
+			),
+			array(
+				'file' => 'cars/Export/Office 2016/Macintosh.csv',
+				'generator' => 'MS Office 2016',
 				'line-separator' => "\r",
 				'encoding' => 'Macintosh',
 				'separator' => ';',
-			)),
-			/* array('cars/Export/Office 2016/MS-DOS.csv', array(
+			),
+			/* array(
+			   'file' => 'cars/Export/Office 2016/MS-DOS.csv',
+			   'generator' => 'MS Office 2016',
 			   'line-separator' => "\r\n",
 			   'encoding' => 'IBM850',
 			   'separator' => ';',
-			   )), */
-			array('cars/Export/Office 2016/Unicode.txt', array(
+			   ), */
+			array(
+				'file' => 'cars/Export/Office 2016/Unicode.txt',
+				'generator' => 'MS Office 2016',
 				'line-separator' => "\r\n",
 				'encoding' => 'UTF-16LE',
 				'separator' => "\t",
-			)),
+			),
 
-			array('cars/Export/Office 2008/CSV.csv', array(
+			array(
+				'file' => 'cars/Export/Office 2008/CSV.csv',
+				'generator' => 'MS Office 2008',
 				'line-separator' => "\r",
 				'encoding' => 'Macintosh',
 				'separator' => ';',
-			)),
-			/* array('cars/Export/Office 2008/MS-DOS.csv', array(
+			),
+			/* array(
+			   'file' => 'cars/Export/Office 2008/MS-DOS.csv',
+			   'generator' => 'MS Office 2008',
 			   'line-separator' => "\r",
 			   'encoding' => 'IBM850',
 			   'separator' => ';',
-			   )), */
-			array('cars/Export/Office 2008/Windows.csv', array(
+			   ), */
+			array(
+				'file' => 'cars/Export/Office 2008/Windows.csv',
+				'generator' => 'MS Office 2008',
 				'line-separator' => "\r\n",
 				'encoding' => 'Windows-1252',
 				'separator' => ';',
-			)),
-			array('cars/Export/Office 2008/UTF-16.txt', array(
+			),
+			array(
+				'file' => 'cars/Export/Office 2008/UTF-16.txt',
+				'generator' => 'MS Office 2008',
 				'line-separator' => "\r\n",
 				'encoding' => 'UTF-16LE',
 				'separator' => "\t",
-			)),
+			),
 
-			array('cars/Export/Office 2003/CSV.csv', array(
+			array(
+				'file' => 'cars/Export/Office 2003/CSV.csv',
+				'generator' => 'MS Office 2003',
 				'line-separator' => "\r\n",
 				'encoding' => 'Windows-1252',
 				'separator' => ';',
-			)),
-			array('cars/Export/Office 2003/MS-DOS.csv', array(
-				'line-separator' => "\r\n",
-				'encoding' => 'IBM850',
-				'separator' => ';',
-			)),
-			array('cars/Export/Office 2003/Macintosh.csv', array(
+			),
+			/* array(
+			   'file' => 'cars/Export/Office 2003/MS-DOS.csv',
+			   'generator' => 'MS Office 2003',
+			   'line-separator' => "\r\n",
+			   'encoding' => 'IBM850',
+			   'separator' => ';',
+			   ), */
+			array(
+				'file' => 'cars/Export/Office 2003/Macintosh.csv',
+				'generator' => 'MS Office 2003',
 				'line-separator' => "\r",
 				'encoding' => 'Macintosh',
 				'separator' => ';',
-			)),
-			array('cars/Export/Office 2003/Unicode.txt', array(
+			),
+			array(
+				'file' => 'cars/Export/Office 2003/Unicode.txt',
+				'generator' => 'MS Office 2003',
 				'line-separator' => "\r\n",
 				'encoding' => 'UTF-16LE',
 				'separator' => "\t",
-			)),
+			),
 
-			array('cars/Export/Office 97/CSV.csv', array(
+			array(
+				'file' => 'cars/Export/Office 97/CSV.csv',
+				'generator' => 'MS Office 97',
 				'line-separator' => "\r\n",
 				'encoding' => 'Windows-1252',
 				'separator' => ',',
-			)),
-			/* array('cars/Export/Office 97/MS-DOS.csv', array(
+			),
+			/* array(
+			   'file' => 'cars/Export/Office 97/MS-DOS.csv',
+			   'generator' => 'MS Office 97',
 			   'line-separator' => "\r\n",
 			   'encoding' => 'IBM850',
 			   'separator' => ',',
-			   )), */
-			array('cars/Export/Office 97/Macintosh.csv', array(
+			   ), */
+			array(
+				'file' => 'cars/Export/Office 97/Macintosh.csv',
+				'generator' => 'MS Office 97',
 				'line-separator' => "\r",
 				'encoding' => 'Macintosh',
 				'separator' => ',',
-			)),
+			),
+		);
+
+		$dataset_name = function ($fixture) {
+			switch ($fixture['separator']) {
+				case ',':
+					$type = 'comma-separated CSV';
+					break;
+				case ';':
+					$type = 'semicolon-separated CSV';
+					break;
+				case "\t":
+					$type = 'TSV';
+					break;
+				default:
+					$type = 'text';
+					break;
+			}
+			switch ($fixture['line-separator']) {
+				case "\n":
+					$lttype = 'LF';
+					break;
+				case "\r":
+					$lttype = 'CR';
+					break;
+				case "\r\n":
+					$lttype = 'CRLF';
+					break;
+				default:
+					$lttype = 'special';
+					break;
+			}
+
+			return "${fixture['generator']} generated ${fixture['encoding']} ${type}, with ${lttype} line terminators";
+		};
+
+		$res = array();
+		foreach ($fixtures as $fixture) {
+			$res[$dataset_name($fixture)] = array(
+				$fixture['file'],
+				array_filter(
+					$fixture,
+					fn($k) => !in_array($k, array('file', 'generator')),
+					ARRAY_FILTER_USE_KEY)
+			);
+		}
+		return $res;
+
+		return array(
 		);
 	}
 
 	/**
 	 * @dataProvider data_format_detection
+	 * @coversNothing
 	 */
 	public function test_format_detection(string $file, array $options): void {
 		$reader = new \riiengineering\csvreader\CSVReader(
