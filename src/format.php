@@ -27,7 +27,7 @@ function detect_column_separator(
 		if (FALSE === $line) continue;
 
 		// quoted columns indicate a correct separator
-		if (1 === preg_match("/(^|[$s])[${quote}][^${quote}]*[${quote}]([$s]|\$)/", $line)) {
+		if (1 === preg_match("/(^|[$s])[{$quote}][^{$quote}]*[{$quote}]([$s]|\$)/", $line)) {
 			$sep = $s;
 			break;
 		}
@@ -100,22 +100,22 @@ function detect_encoding($fh): ?string {
 		switch ($pos % 4) {
 			// LE
 			case 0:
-				if (0 === substr_compare($s, "${c}\x00\x00\x00", $pos, 4)) {
+				if (0 === substr_compare($s, "{$c}\x00\x00\x00", $pos, 4)) {
 					return 'UTF-32LE';
 				}
 			case 2:
-				if (0 === substr_compare($s, "${c}\x00", $pos, 2)) {
+				if (0 === substr_compare($s, "{$c}\x00", $pos, 2)) {
 					return 'UTF-16LE';
 				}
 				break;
 
 				// BE
 			case 3:
-				if (0 === substr_compare($s, "\x00\x00\x00${c}", $pos-3, 4)) {
+				if (0 === substr_compare($s, "\x00\x00\x00{$c}", $pos-3, 4)) {
 					return 'UTF-32BE';
 				}
 			case 1:
-				if (0 === substr_compare($s, "\x00${c}", $pos-1, 2)) {
+				if (0 === substr_compare($s, "\x00{$c}", $pos-1, 2)) {
 					return 'UTF-16BE';
 				}
 				break;

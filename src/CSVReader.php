@@ -43,15 +43,15 @@ class CSVReader implements \Iterator {
 
 		if (is_string($file)) {
 			if (!file_exists($file)) {
-				throw new \RuntimeException("${file}: No such file");
+				throw new \RuntimeException("{$file}: No such file");
 			}
 			if (!is_readable($file)) {
-				throw new \RuntimeException("${file}: Permission denied");
+				throw new \RuntimeException("{$file}: Permission denied");
 			}
 
 			$this->fh = fopen($file, 'r');
 			if (FALSE === $this->fh) {
-				throw new \RuntimeException("cannot open ${file}");
+				throw new \RuntimeException("cannot open {$file}");
 			}
 		} elseif (is_resource($file)) {
 			$this->fh = $file;
@@ -105,7 +105,7 @@ class CSVReader implements \Iterator {
 		if ('AUTO' === $this->options['line-separator']) {
 			$this->options['line-separator'] = format\detect_line_separator($this->fh);
 			if (is_null($this->options['line-separator'])) {
-				throw new \RuntimeException("failed to detect line separator of file ${file}");
+				throw new \RuntimeException("failed to detect line separator of file {$file}");
 			}
 		}
 
@@ -270,7 +270,7 @@ class CSVReader implements \Iterator {
 		}
 
 		stream_filter_append(
-			$this->fh, "convert.iconv.${input_encoding}.${output_encoding}");
+			$this->fh, "convert.iconv.{$input_encoding}.{$output_encoding}");
 	}
 
 	private static function colslug(string $colname): string {
@@ -318,7 +318,7 @@ class CSVReader implements \Iterator {
 
 	public function columnNameToNumber(string $colname): int {
 		if (!array_key_exists($colname, $this->colmap)) {
-			throw new \InvalidArgumentException("unknown column: ${colname}");
+			throw new \InvalidArgumentException("unknown column: {$colname}");
 		}
 		return $this->colmap[$colname]+1;
 	}
