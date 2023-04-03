@@ -177,7 +177,7 @@ class CSVReader implements \Iterator {
 			if (!isset($this->columns)) {
 				// get $columns from header line
 				$this->columns = array_fill_keys(
-					array_map('self::colslug', $first_row),
+					array_map(self::class.'::colslug', $first_row),
 					array());
 				$required_columns = $this->columns;
 				$this->check_column_names();
@@ -279,7 +279,7 @@ class CSVReader implements \Iterator {
 
 	private function map_from_headerline(array $header): array {
 		$colunslug = array_combine(
-			array_map('self::colslug', array_keys($this->columns)),
+			array_map(self::class.'::colslug', array_keys($this->columns)),
 			array_keys($this->columns));
 		$res = array();
 
